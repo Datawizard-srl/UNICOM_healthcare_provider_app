@@ -3,7 +3,7 @@
 title "Filter Manager flow"
 actor "Healtcare Provider" as hc
 participant "Healtcare Provider App" as hc_app
-database "UNICOM backend" as be
+participant "UNICOM backend" as be #lightblue
 
 activate hc
 activate hc_app

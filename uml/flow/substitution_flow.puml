@@ -5,7 +5,7 @@ title "Substitution Manager flow"
 actor "User" as user
 actor "Healthcare Provider" as hc
 participant "Healthcare Provider App" as hc_app
-database "UNICOM backend" as be
+participant "UNICOM backend" as be #lightblue
 
 user -> hc: show QR Code
 activate user

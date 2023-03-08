@@ -1,17 +1,22 @@
 @startuml
 
-database "Unicom Backend" {
+component "Unicom Backend" as be{
     component [Substitution Component] as subs
-    subs .right. Substitution
+    () Substitution as i_subs
+    subs -right- i_subs
 
     component [FHIR Server] as fhir_server
-    fhir_server .left. "Retrieve Data"
+    () "Retrieve Data" as i_fhir_server
+    fhir_server -right- i_fhir_server
+    fhir_server -[hidden]up- subs
 }
 
 component "Substitution Manager" as subs_manager{
     component "Filter Manager" as filter_manager
 }
 
-subs_manager <-up-> Substitution
-filter_manager <-up-> "Retrieve Data"
+be -[hidden]right-> subs_manager
+subs_manager ...> i_subs
+filter_manager ..> i_fhir_server
+subs .> i_fhir_server
 @enduml
