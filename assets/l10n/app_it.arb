@@ -1,0 +1,42 @@
+{
+  "commons_Name": "Nome",
+  "commons_Informations": "Informazioni",
+  "commons_SubstanceName": "Nome Sostanza",
+  "commons_MoietyName": "Nome Moiety",
+  "commons_AdministrableDoseForm": "Forma Della Dose Somministrabile",
+  "commons_ProductUnitOfPresentation": "Unità Di Presentazione Del Prodotto",
+  "commons_RoutesOfAdministration": "Via Di Somministrazione",
+  "commons_ReferenceStrength": "Reference Strength",
+  "commons_MarketingAuthorizationHolderLabel": "Azienda",
+  "commons_Country": "Nazione",
+
+  "appbar_settings_title": "Impostazioni",
+  "button_next": "AVANTI",
+  "button_save": "SAVE",
+  "welcome_title": "Benvenuto!",
+  "welcome_text": "(Italiano)\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Neque, hendrerit dui in purus libero non sollicitudin purus dolor. Fermentum tempor et magna ipsum aliquet.\n       \n       Dignissim quisque in nec laoreet pellentesque mauris. Sem enim, nibh felis, donec turpis diam senectus magna at. Amet eu egestas metus, facilisi at.",
+
+  "search": "Cerca",
+
+  "homepage_text": "Con l'app Unicom puoi scansionare un farmaco e controllare la sostituzione simile per paziente.\n\nDopo la scansione Qr puoi vedere le caratteristiche del farmaco e visualizzare l'elenco delle sostituzioni.",
+
+  "settings_dark_mode": "Modalità Notturna",
+
+  "medicationDetailsScreen_Appbar_Title_Scanned": "Medicinale trovato",
+  "medicationDetailsScreen_Appbar_Title_Substitution": "Medicinale selezionato",
+  "medicationDetailsScreen_Button_GenerateSubstitution": "GENERA LISTA DI MEDICINALI SIMILI",
+  "medicationDetailsScreen_Button_GenerateQrCode": "GENERA QR CODE PER L'UTENTE",
+
+  "substitutionListScreen_Appbar_Title": "Lista dei medicinali simili",
+  "substitutionListScreen_Header_Text": "Puoi trovare prodotti simili a:",
+  "substitutionListScreen_Search_Placeholder": "Cerca medicinale o sostanza",
+  "substitutionListScreen_ResultsFound": "Ci sono <b>{numFound}</b> risultati",
+  "@substitutionListScreen_ResultsFound": {
+    "placeholders": {"numFound": {"type": "int"}}
+  },
+
+  "substitutionFilterDialog_Title": "Filtra ricerca",
+
+  "qrScreen_Info_Text": "Mostra il codice QR all'utente, in modo che possa scansionarlo e vedere la sostituzione selezionata."
+
+}

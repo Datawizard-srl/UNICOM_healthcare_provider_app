@@ -1,0 +1,42 @@
+{
+  "commons_Name": "Name",
+  "commons_Informations": "Informations",
+  "commons_SubstanceName": "Substance Name",
+  "commons_MoietyName": "Moiety Name",
+  "commons_AdministrableDoseForm": "Administrable Dose Form",
+  "commons_ProductUnitOfPresentation": "Product Unit Of Presentation",
+  "commons_RoutesOfAdministration": "Route Of Administration",
+  "commons_ReferenceStrength": "Reference Strength",
+  "commons_MarketingAuthorizationHolderLabel": "Marketing Authorization Holder Label",
+  "commons_Country": "Country",
+
+
+  "appbar_settings_title": "Settings",
+  "button_next": "NEXT",
+  "button_save": "SAVE",
+  "welcome_title": "Welcome!",
+  "welcome_text": "(English)\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Neque, hendrerit dui in purus libero non sollicitudin purus dolor. Fermentum tempor et magna ipsum aliquet.\n       \n       Dignissim quisque in nec laoreet pellentesque mauris. Sem enim, nibh felis, donec turpis diam senectus magna at. Amet eu egestas metus, facilisi at.",
+
+  "search": "Search",
+
+  "homepage_text": "With Unicom app you can scan a drug and check the substitution similar for patient.\n\nAfter Qr scan you can see feature of drug and visualize list of substitutions.",
+
+  "settings_dark_mode": "Dark Mode",
+
+  "medicationDetailsScreen_Appbar_Title_Scanned": "Drug scanned",
+  "medicationDetailsScreen_Appbar_Title_Substitution": "Drug selected",
+  "medicationDetailsScreen_Button_GenerateSubstitution": "GENERATE LIST OF SIMILAR DRUGS",
+  "medicationDetailsScreen_Button_GenerateQrCode": "GENERATE QR CODE FOR USER",
+
+  "substitutionListScreen_Appbar_Title": "List of similar drugs",
+  "substitutionListScreen_Header_Text": "You can find similar drug of:",
+  "substitutionListScreen_Search_Placeholder": "Find drug or substance",
+  "substitutionListScreen_ResultsFound": "You have <b>{numFound}</b> results",
+  "@substitutionListScreen_ResultsFound": {
+    "placeholders": {"numFound": { "type": "int" }}
+  },
+
+  "substitutionFilterDialog_Title": "Filter research",
+
+  "qrScreen_Info_Text": "Show this QR code to the user so that he can scan it and see your selection."
+}

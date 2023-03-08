@@ -1,0 +1,45 @@
+@startuml
+skinparam sequenceReferenceBackgroundColor white
+
+title "Substitution Manager flow"
+actor "User" as user
+actor "Healthcare Provider" as hc
+participant "Healthcare Provider App" as hc_app
+database "UNICOM backend" as be
+
+user -> hc: show QR Code
+activate user
+    activate hc
+    hc -> hc_app: scan QR Code
+        activate hc_app
+            hc_app -> be: drug information request
+            activate be
+            hc_app <- be: drug information response
+            deactivate be
+
+        hc <- hc_app: show medication selected by user
+        deactivate hc_app
+        hc -> hc_app: tap generate substitution
+        activate hc_app
+            hc_app -> be: substitutions request
+            activate be
+            hc_app <- be: substitutions response
+            deactivate be
+
+        hc <- hc_app: show substitutions list
+        ref over hc
+            Filter Manager flow
+        endref
+        deactivate hc_app
+        hc -> hc_app: select substitution
+        activate hc_app
+            hc_app -> hc_app: generate QR Code
+        hc <- hc_app: show QR Code
+        deactivate hc_app
+    user <- hc: scan QR Code for substitution
+    deactivate hc
+deactivate user
+
+
+
+@enduml

@@ -1,0 +1,29 @@
+@startuml
+
+title "Filter Manager flow"
+actor "Healtcare Provider" as hc
+participant "Healtcare Provider App" as hc_app
+database "UNICOM backend" as be
+
+activate hc
+activate hc_app
+hc <- hc_app: show substitutions list
+deactivate hc_app
+hc -> hc_app: tap filters
+activate hc_app
+    hc_app -> be: drugs information request
+    activate be
+    hc_app <- be: drugs information response
+    deactivate be
+hc <- hc_app: show filters
+deactivate hc_app
+hc -> hc_app: select filters
+activate hc_app
+hc_app -> hc_app: apply filters
+hc <- hc_app: show filtered results
+deactivate hc_app
+hc -> hc_app: select substitution
+activate hc_app
+
+
+@enduml
