@@ -1,11 +1,15 @@
 import 'dart:collection';
 
+import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:unicom_healthcare/database/local_storage/user_preferences.dart';
 import 'package:unicom_healthcare/models/user_preferences_model.dart';
+import 'package:unicom_healthcare/settings/flags.dart';
 import 'package:unicom_healthcare/themes/healthcare/dropdowns.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:unicom_healthcare/utilities/locale_utils.dart';
+import 'package:unicom_healthcare/widgets/buttons/primary_button.dart';
 
 import 'homepage_screen.dart';
 
@@ -64,7 +68,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       ),
     );
   }
-
+  
   Widget buildWelcomeBodyPanel(BuildContext context, String welcomeString) {
     const Radius borderRadius = Radius.circular(30);
 
@@ -100,27 +104,25 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   ),
                   Consumer<UserPreferencesNotifier>(
                     builder: (context, localePreferences, child) {
-                      return BaseDropdown(
-                        dropdownItems: LinkedHashMap.from({
-                          'en_US': const Text('English'),
-                          'it_IT': const Text('Italiano'),
-                        }),
-                        selected: localePreferences.getLocale().toString(),
-                        onChanged: (value) async => await localePreferences.setLocaleFromString(value!),
+                      return Column(
+                        children: [
+                          countryDropdown(context, localePreferences),
+                          const SizedBox(height: 10),
+                          languageDropdown(context, localePreferences),
+                        ],
                       );
                     }
                   ),
                   Consumer<UserPreferencesNotifier>(
                       builder: (context, localePreferences, child) {
-                      return ElevatedButton(
-                        onPressed: () async {
-                          UserPreferences.setLocaleSelected(true);
-                          Navigator.popAndPushNamed(context, HomepageScreen.route);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Text(AppLocalizations.of(context)!.button_next),
-                        ),
+                      return PrimaryButton(
+                        onPressed: _canGo(localePreferences)
+                            ? () async {
+                                UserPreferences.setLocaleSelected(true);
+                                Navigator.popAndPushNamed(context, HomepageScreen.route);
+                              }
+                            : null,
+                        child: Text(AppLocalizations.of(context)!.button_next),
                       );
                     }
                   )
@@ -132,4 +134,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       ),
     );
   }
+   bool _canGo(UserPreferencesNotifier localePreferences) {
+    return localePreferences.getLocale() != null
+        && localePreferences.getCountryCode() != null
+        && localePreferences.getCountryCode() != '';
+   }
 }

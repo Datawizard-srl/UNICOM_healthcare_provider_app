@@ -9,6 +9,8 @@
   "commons_ReferenceStrength": "Reference Strength",
   "commons_MarketingAuthorizationHolderLabel": "Marketing Authorization Holder Label",
   "commons_Country": "Country",
+  "commons_SelectLanguage": "Select Language",
+  "commons_SelectCountry": "Select Country",
 
 
   "appbar_settings_title": "Settings",

@@ -10,6 +10,7 @@ class PreferencesKeys {
   static const String languageSelected = 'languageSelected';
   static const String darkMode = 'darkMode'; 
   static const String fontSize = 'fontSize';
+  static const String countryCode = 'countryCode';
 }
 
 class UserPreferences {
@@ -29,7 +30,10 @@ class UserPreferences {
   
   // SETTERS ///////////////////////////////////
   
-  static Future<bool> setLocale(Locale locale) async {
+  static Future<bool> setLocale(Locale? locale) async {
+    if (locale == null){
+      return _preferences.setString(PreferencesKeys.locale, '');
+    }
     return _preferences.setString(PreferencesKeys.locale, locale.toString());
   }
 
@@ -44,13 +48,18 @@ class UserPreferences {
   static Future<bool> setFontSize(int value) async {
     return _preferences.setInt(PreferencesKeys.fontSize, value);
   }
+
+  static Future<bool> setCountry(String? countryCode) async {
+    countryCode ??= '';
+    return _preferences.setString(PreferencesKeys.countryCode, countryCode);
+  }
   
   
   // GETTERS //////////////////////////////////
 
   static Locale? getLocale() {
     String? langCode = _preferences.getString(PreferencesKeys.locale);
-    return langCode == null ? null : UserPreferencesNotifier.localeFromString(langCode);
+    return langCode == null || langCode == '' ? null : UserPreferencesNotifier.localeFromString(langCode);
   }
 
   static bool isLocaleSelected(){
@@ -63,5 +72,9 @@ class UserPreferences {
 
   static int getFontSize(){
     return _preferences.getInt(PreferencesKeys.fontSize)!;
+  }
+
+  static String? getCountryCode(){
+    return _preferences.getString(PreferencesKeys.countryCode);
   }
 }

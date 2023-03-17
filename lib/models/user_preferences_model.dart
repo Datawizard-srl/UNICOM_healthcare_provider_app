@@ -16,8 +16,12 @@ class UserPreferencesNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future setLocaleFromString(String localeString) async {
-    UserPreferences.setLocale(localeFromString(localeString));
+  Future setLocaleFromString(String? localeString) async {
+    if (localeString == null || localeString == ''){
+      UserPreferences.setLocale(null);
+    } else {
+      UserPreferences.setLocale(localeFromString(localeString));
+    }
     notifyListeners();
   }
 
@@ -30,12 +34,21 @@ class UserPreferencesNotifier extends ChangeNotifier {
     UserPreferences.setFontSize(value);
     notifyListeners();
   }
+  
+  Future<void> setCountryCode(String? value) async {
+    UserPreferences.setCountry(value);
+    notifyListeners();
+  }
 
 
   // GETTERS /////////////////////////////////////
 
   Locale? getLocale() {
     return UserPreferences.getLocale();
+  }
+
+  String? getCountryCode(){
+    return UserPreferences.getCountryCode();
   }
 
 

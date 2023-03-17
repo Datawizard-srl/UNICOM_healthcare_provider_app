@@ -1,14 +1,18 @@
 import 'dart:collection';
 
+import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
+import 'package:unicom_healthcare/models/user_preferences_model.dart';
 import 'package:unicom_healthcare/themes/healthcare/colors.dart';
+import 'package:unicom_healthcare/utilities/locale_utils.dart';
 
 class BaseDropdown extends StatefulWidget {
   final LinkedHashMap<String, Widget> dropdownItems;
   final ValueChanged<String?>? onChanged;
   final String? selected;
+  final Color? backgroundColor;
 
-  const BaseDropdown({super.key, required this.dropdownItems, this.onChanged, this.selected});
+  const BaseDropdown({super.key, required this.dropdownItems, this.onChanged, this.selected, this.backgroundColor});
 
   @override
   State<BaseDropdown> createState() => _BaseDropdownState();
@@ -32,7 +36,7 @@ class _BaseDropdownState extends State<BaseDropdown> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.background,
+        color: widget.backgroundColor ?? Theme.of(context).colorScheme.background,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: dividerColor)
       ),
@@ -55,4 +59,39 @@ class _BaseDropdownState extends State<BaseDropdown> {
       ),
     );
   }
+}
+
+Widget _countryRow(String countryCode, String countryName) {
+  return Row(children: [
+    CountryFlags.flag(countryCode, height: 20, width: 30),
+    const SizedBox(width: 5),
+    Text(countryName)]
+  );
+}
+
+Widget countryDropdown(BuildContext context, UserPreferencesNotifier localePreferences){
+  return BaseDropdown(
+    backgroundColor: Colors.transparent,
+    dropdownItems: LinkedHashMap.from({
+      '': Text(LocaleUtils.translate(context).commons_SelectCountry),
+      'us': _countryRow("us", "United States of America"),
+      'it': _countryRow("it", "Italia"),
+      'gr': _countryRow("gr", "Ελλάδα"),
+    }),
+    selected: localePreferences.getCountryCode() ?? '',
+    onChanged: (value) async => await localePreferences.setCountryCode(value),
+  );
+}
+
+Widget languageDropdown(BuildContext context, UserPreferencesNotifier localePreferences){
+  return BaseDropdown(
+    backgroundColor: Colors.transparent,
+    dropdownItems: LinkedHashMap.from({
+      '': Text(LocaleUtils.translate(context).commons_SelectLanguage),
+      'en_US': _countryRow("us", "English"),
+      'it_IT': _countryRow("it", "Italiano")
+    }),
+    selected: localePreferences.getLocale().toString(),
+    onChanged: (value) async => await localePreferences.setLocaleFromString(value),
+  );
 }

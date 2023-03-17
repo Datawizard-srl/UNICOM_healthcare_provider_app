@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:unicom_healthcare/themes/healthcare/colors.dart';
+import 'package:unicom_healthcare/utilities/locale_utils.dart';
 
 
 import '../database/local_storage/user_preferences.dart';
@@ -38,6 +39,13 @@ class SettingsScreen extends StatelessWidget {
           builder: (context, userPreferences, child) {
             return Column(
               children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: verticalPadding),
+                  child: Divider(height: 1, color: dividerColor),
+                ),
+
+                buildSelectCountry(context, userPreferences, horizontalPadding),
+
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: verticalPadding),
                   child: Divider(height: 1, color: dividerColor),
@@ -92,16 +100,25 @@ class SettingsScreen extends StatelessWidget {
   Widget buildSelectLanguage(BuildContext context, UserPreferencesNotifier userPreferences, double horizontalPadding) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-      child: BaseDropdown(
-        dropdownItems: LinkedHashMap.from({
-          'en_US': const Text('English'),
-          'it_IT': const Text('Italiano'),
-        }),
-        selected: userPreferences.getLocale().toString(),
-        onChanged: (value) async {
-          UserPreferences.setLocale(userPreferences.getLocale()!);
-          return await userPreferences.setLocaleFromString(value!);
-        },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(LocaleUtils.translate(context).commons_SelectLanguage),
+          languageDropdown(context, userPreferences),
+        ],
+      ),
+    );
+  }
+
+  Widget buildSelectCountry(BuildContext context, UserPreferencesNotifier userPreferences, double horizontalPadding) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(LocaleUtils.translate(context).commons_SelectCountry),
+          countryDropdown(context, userPreferences),
+        ],
       ),
     );
   }

@@ -9,6 +9,8 @@
   "commons_ReferenceStrength": "Reference Strength",
   "commons_MarketingAuthorizationHolderLabel": "Azienda",
   "commons_Country": "Nazione",
+  "commons_SelectLanguage": "Seleziona Lingua",
+  "commons_SelectCountry": "Seleziona Nazione",
 
   "appbar_settings_title": "Impostazioni",
   "button_next": "AVANTI",
