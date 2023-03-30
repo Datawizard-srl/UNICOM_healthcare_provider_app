@@ -10,6 +10,7 @@ class Medication {
   late final String referenceStrength;
   late final String marketingAuthorizationHolderLabel;
   late final String country;
+  late final String languageCode;
 
   Medication({
     required this.id,
@@ -23,6 +24,7 @@ class Medication {
     required this.referenceStrength,
     required this.marketingAuthorizationHolderLabel,
     required this.country,
+    required this.languageCode,
   });
 
   Medication.compiled({
@@ -37,6 +39,7 @@ class Medication {
     this.referenceStrength = '',
     this.marketingAuthorizationHolderLabel = '',
     this.country = '',
+    this.languageCode = '',
   });
 
   Medication.fromMap(Map<String, dynamic> medicationMap) {
@@ -51,6 +54,7 @@ class Medication {
     referenceStrength = medicationMap['referenceStrength'];
     marketingAuthorizationHolderLabel = medicationMap['marketingAuthorizationHolderLabel'];
     country = medicationMap['country'];
+    languageCode = medicationMap['languageCode'];
   }
 
   Map<String, dynamic> toMap() {
@@ -65,23 +69,27 @@ class Medication {
       'routesOfAdministration': routesOfAdministration,
       'referenceStrength': referenceStrength,
       'marketingAuthorizationHolderLabel': marketingAuthorizationHolderLabel,
-      'country': country
+      'country': country,
+      'languageCode': languageCode,
     };
   }
 
   @override
   String toString() {
-    return '(id: $id, '
+    return '('
+        'id: $id, '
         'mpid: $mpid, '
         'name: $name, '
-        'substanceName: $substanceName'
-        'moietyName: $moietyName'
-        'administrableDoseForm: $administrableDoseForm'
-        'productUnitOfPresentation: $productUnitOfPresentation'
-        'routesOfAdministration: $routesOfAdministration'
-        'referenceStrength: $referenceStrength'
-        'marketingAuthorizationHolderLabel: $marketingAuthorizationHolderLabel'
-        'country: $country)'
+        'substanceName: $substanceName '
+        'moietyName: $moietyName '
+        'administrableDoseForm: $administrableDoseForm '
+        'productUnitOfPresentation: $productUnitOfPresentation '
+        'routesOfAdministration: $routesOfAdministration '
+        'referenceStrength: $referenceStrength '
+        'marketingAuthorizationHolderLabel: $marketingAuthorizationHolderLabel '
+        'country: $country '
+        'languageCode: $languageCode '
+      ')'
     ;
   }
 

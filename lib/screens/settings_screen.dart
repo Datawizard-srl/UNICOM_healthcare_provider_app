@@ -104,7 +104,7 @@ class SettingsScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(LocaleUtils.translate(context).commons_SelectLanguage),
-          languageDropdown(context, userPreferences),
+          languageDropdown(context, userPreferences, withNull: false),
         ],
       ),
     );
@@ -117,7 +117,7 @@ class SettingsScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(LocaleUtils.translate(context).commons_SelectCountry),
-          countryDropdown(context, userPreferences),
+          countryDropdown(context, userPreferences, withNull: false),
         ],
       ),
     );

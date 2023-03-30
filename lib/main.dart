@@ -12,6 +12,7 @@ import 'package:unicom_healthcare/screens/qr_screen.dart';
 import 'package:unicom_healthcare/screens/settings_screen.dart';
 import 'package:unicom_healthcare/screens/substitution_list_screen.dart';
 import 'package:unicom_healthcare/screens/welcome_screen.dart';
+import 'package:unicom_healthcare/settings/countries.dart';
 import 'package:unicom_healthcare/settings/locale.dart';
 import 'package:unicom_healthcare/themes/healthcare/theme.dart';
 import 'package:unicom_healthcare/utilities/api_fhir.dart';
@@ -21,7 +22,16 @@ void main() async {
   await UserPreferences.init();
   await LocationsRepository.init();
 
-  ApiFhir.init(serverUrl: "https://jpa.unicom.datawizard.it", substitutionUrl: '');
+  ApiFhir.init(
+      serverUrl: "https://jpa.unicom.datawizard.it",
+      substitutionUrl: 'https://unicom.gnomon.com.gr',
+      substitutionEndpoint: 'r5/substitutes'
+  );
+  await Countries.initCodes();
+  await Languages.initCodes();
+  await Substances.initCodes();
+  await DoseForms.initCodes();
+
   runApp(const MyApp());
 }
 

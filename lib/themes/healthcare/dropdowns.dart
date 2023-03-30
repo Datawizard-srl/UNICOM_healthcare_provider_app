@@ -69,28 +69,48 @@ Widget _countryRow(String countryCode, String countryName) {
   );
 }
 
-Widget countryDropdown(BuildContext context, UserPreferencesNotifier localePreferences){
-  return BaseDropdown(
-    backgroundColor: Colors.transparent,
-    dropdownItems: LinkedHashMap.from({
+Widget countryDropdown(BuildContext context, UserPreferencesNotifier localePreferences, {bool withNull=true}){
+  LinkedHashMap<String, Widget> items;
+  if (withNull) {
+    items = LinkedHashMap.from({
       '': Text(LocaleUtils.translate(context).commons_SelectCountry),
       'us': _countryRow("us", "United States of America"),
       'it': _countryRow("it", "Italia"),
       'gr': _countryRow("gr", "Ελλάδα"),
-    }),
+    });
+  } else {
+    items = LinkedHashMap.from({
+      'us': _countryRow("us", "United States of America"),
+      'it': _countryRow("it", "Italia"),
+      'gr': _countryRow("gr", "Ελλάδα"),
+    });
+  }
+
+  return BaseDropdown(
+    backgroundColor: Colors.transparent,
+    dropdownItems: items,
     selected: localePreferences.getCountryCode() ?? '',
     onChanged: (value) async => await localePreferences.setCountryCode(value),
   );
 }
 
-Widget languageDropdown(BuildContext context, UserPreferencesNotifier localePreferences){
-  return BaseDropdown(
-    backgroundColor: Colors.transparent,
-    dropdownItems: LinkedHashMap.from({
+Widget languageDropdown(BuildContext context, UserPreferencesNotifier localePreferences, {bool withNull=true}){
+  LinkedHashMap<String, Widget> items;
+  if (withNull) {
+    items = LinkedHashMap.from({
       '': Text(LocaleUtils.translate(context).commons_SelectLanguage),
       'en_US': _countryRow("us", "English"),
       'it_IT': _countryRow("it", "Italiano")
-    }),
+    });
+  } else {
+    items = LinkedHashMap.from({
+      'en_US': _countryRow("us", "English"),
+      'it_IT': _countryRow("it", "Italiano")
+    });
+  }
+  return BaseDropdown(
+    backgroundColor: Colors.transparent,
+    dropdownItems: items,
     selected: localePreferences.getLocale().toString(),
     onChanged: (value) async => await localePreferences.setLocaleFromString(value),
   );

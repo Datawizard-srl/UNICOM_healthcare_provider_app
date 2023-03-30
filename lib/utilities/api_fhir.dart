@@ -12,18 +12,21 @@ class ResourcesNames {
   static const String ingredient = "Ingredient";
   static const String regulatedAuthorization = "RegulatedAuthorization";
   static const String organization = "Organization";
+  static const String codeSystem = "CodeSystem";
 }
 
 class ApiFhir {
   late final String serverUrl;
   late final String substitutionUrl;
+  late final String substitutionEndpoint;
 
   static ApiFhir instance = ApiFhir();
   static var headers = {'Content-type': 'application/fhir+json'};
 
-  static init({required String serverUrl, required String substitutionUrl}){
+  static init({required String serverUrl, required String substitutionUrl, required String substitutionEndpoint}){
     instance.serverUrl = serverUrl;
     instance.substitutionUrl = substitutionUrl;
+    instance.substitutionEndpoint = substitutionEndpoint;
   }
 
   static Uri getUri(String baseUrl, String endpoint, Map<String, dynamic>? queryParameters){
@@ -85,6 +88,7 @@ class ApiFhir {
     var jsonResponse = jsonDecode(response.body);
     MedicinalProductDefinition medicinalProductDefinition = MedicinalProductDefinition.fromJson(jsonResponse);
     var country = jsonResponse['name'][0]['usage'][0]['country']['coding'][0]['display'];
+    var languageCode = jsonResponse['name'][0]['usage'][0]['language']['coding'][0]['code'];
 
     response = await http.get(getUri(instance.serverUrl, '/fhir/${ResourcesNames.ingredient}', {'for': id}), headers: headers);
     Bundle ingredientSearchSet = Bundle.fromJson(jsonDecode(response.body));
@@ -123,39 +127,9 @@ class ApiFhir {
       'referenceStrength': referenceStrength,
       'marketingAuthorizationHolderLabel': organization.name ?? 'Unknown',
       'country': country ?? 'Unknown',
+      'languageCode': languageCode ?? 'Unknown',
     });
 
-  }
-
-  static Future<List<app_medication.Medication>> getMedicationsByPrefix(String prefix) async {
-    var headers = {'Content-type': 'application/fhir+json'};
-
-    var queryParameters = {'name': prefix};
-    Uri uri = getUri(instance.serverUrl, '/fhir/${ResourcesNames.medicinalProductDefinition}', queryParameters);
-
-    var response = await http.get(uri, headers: headers);
-    Bundle medicinalProductDefinitionSearchSet = Bundle.fromJson(jsonDecode(response.body));
-
-    List<app_medication.Medication> ret = [];
-    MedicinalProductDefinition mpd;
-    for (var element in medicinalProductDefinitionSearchSet.entry!) {
-      if (element.resource == null) continue;
-      mpd = MedicinalProductDefinition.fromJson(element.resource!.toJson());
-      ret.add( app_medication.Medication(
-          id: mpd.id!.toString(),
-          mpid: mpd.identifier![0].value!,
-          name: mpd.name[0].productName!,
-          substanceName: '',
-          moietyName: '',
-          administrableDoseForm: mpd.combinedPharmaceuticalDoseForm!.coding![0].display!,
-          productUnitOfPresentation: '',
-          routesOfAdministration: '',
-          referenceStrength: '',
-          marketingAuthorizationHolderLabel: '',
-          country: mpd.name[0].countryLanguage![0].country.coding![0].display!,
-      ));
-    }
-    return ret;
   }
 
   static Future<Bundle> getSubstitutions(
@@ -165,22 +139,32 @@ class ApiFhir {
       required String substanceCode
     }) async {
 
-    List<String> ids = ["AMLaccord-10mg-Tablet-SE-IS-MedicinalProductDefinition", "LantusSolostar-EE-MPD", "AMLmedvalley-10mg-Tablet-SE-IS-MedicinalProductDefinition", "Hipres-5mg-Tablet-EE-MPD", "AMLbluefish-5mg-Tablet-SE-IS-MedicinalProductDefinition", "Betaklav-500mg-125mg-EE-MPD", "Paracetamol-Kabi-10mg-1ml-solinj-EE-MPD", "Lodipin-10mg-Capsule-GR-MPD", "Amlodistad-10mg-Tablet-SE-IS-MedicinalProductDefinition", "Agen-5mg-Tablet-EE-MPD", "AMLbluefish-10mg-Tablet-SE-IS-MedicinalProductDefinition", "AMLteva-10mg-Tablet-SE-IS-MedicinalProductDefinition", "AMLteva-5mg-Tablet-SE-IS-MedicinalProductDefinition", "Cefuroxime-MIP-1500mg-EE-MPD", "CefuroximStragen-1.5g-Powder-SE-IS-MedicinalProductDefinition", "Hipres-10mg-Tablet-EE-MPD", "Clexane-60mg-06ml-solinj-EE-MPD", "AMLsandoz-5mg-Tablet-SE-IS-MedicinalProductDefinition", "Panodil500mgoralsolutionsachet-SE-PLC-MPD",];
+    var queryParameters = {
+      'doseform': doseformCode,
+      'country': languageCode,
+      'substance': substanceCode,
+    };
+    Uri uri = getUri(instance.substitutionUrl, instance.substitutionEndpoint, queryParameters);
+    var response = await http.get(Uri.parse(uri.toString()));
+    Bundle substitutions = Bundle.fromJson(jsonDecode(response.body));
+    return substitutions;
 
-    var errors = [];
-
-    List<BundleEntry?> entries = await Future.wait(ids.map((id) async {
-      var response = await http.get(getUri(instance.serverUrl, '/fhir/${ResourcesNames.medicinalProductDefinition}/$id', null), headers: headers);
-      var jsonResponse = jsonDecode(response.body);
-
-      try {
-        return BundleEntry(resource: MedicinalProductDefinition.fromJson(jsonResponse));
-      } catch (e) {
-        errors.add({jsonResponse['id']: e});
-      }
-    }).toList());
-
-    return Bundle(entry: entries.whereType<BundleEntry>().toList());
+    // List<String> ids = ["AMLaccord-10mg-Tablet-SE-IS-MedicinalProductDefinition", "LantusSolostar-EE-MPD", "AMLmedvalley-10mg-Tablet-SE-IS-MedicinalProductDefinition", "Hipres-5mg-Tablet-EE-MPD", "AMLbluefish-5mg-Tablet-SE-IS-MedicinalProductDefinition", "Betaklav-500mg-125mg-EE-MPD", "Paracetamol-Kabi-10mg-1ml-solinj-EE-MPD", "Lodipin-10mg-Capsule-GR-MPD", "Amlodistad-10mg-Tablet-SE-IS-MedicinalProductDefinition", "Agen-5mg-Tablet-EE-MPD", "AMLbluefish-10mg-Tablet-SE-IS-MedicinalProductDefinition", "AMLteva-10mg-Tablet-SE-IS-MedicinalProductDefinition", "AMLteva-5mg-Tablet-SE-IS-MedicinalProductDefinition", "Cefuroxime-MIP-1500mg-EE-MPD", "CefuroximStragen-1.5g-Powder-SE-IS-MedicinalProductDefinition", "Hipres-10mg-Tablet-EE-MPD", "Clexane-60mg-06ml-solinj-EE-MPD", "AMLsandoz-5mg-Tablet-SE-IS-MedicinalProductDefinition", "Panodil500mgoralsolutionsachet-SE-PLC-MPD",];
+    //
+    // var errors = [];
+    //
+    // List<BundleEntry?> entries = await Future.wait(ids.map((id) async {
+    //   var response = await http.get(getUri(instance.serverUrl, '/fhir/${ResourcesNames.medicinalProductDefinition}/$id', null), headers: headers);
+    //   var jsonResponse = jsonDecode(response.body);
+    //
+    //   try {
+    //     return BundleEntry(resource: MedicinalProductDefinition.fromJson(jsonResponse));
+    //   } catch (e) {
+    //     errors.add({jsonResponse['id']: e});
+    //   }
+    // }).toList());
+    //
+    // return Bundle(entry: entries.whereType<BundleEntry>().toList());
   }
 
   static Future<List<app_medication.Medication>> getSubstitutionsMedications({
@@ -193,6 +177,11 @@ class ApiFhir {
       substitutions.add(await ApiFhir.getMedicationById(m.id));
     }
     return substitutions;
+  }
+
+  static Future<dynamic> getResource({required String resourceType, required String id}) async {
+    var response = await http.get(getUri(instance.serverUrl, '/fhir/$resourceType/$id', null), headers: headers);
+    return jsonDecode(response.body);
   }
 }
 

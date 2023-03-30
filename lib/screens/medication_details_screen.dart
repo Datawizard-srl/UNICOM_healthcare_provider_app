@@ -1,8 +1,10 @@
 import 'package:fhir/r5.dart' as fhir_r5;
 import 'package:flutter/material.dart';
+import 'package:unicom_healthcare/database/local_storage/user_preferences.dart';
 import 'package:unicom_healthcare/entities/medication.dart';
 import 'package:unicom_healthcare/screens/qr_screen.dart';
 import 'package:unicom_healthcare/screens/substitution_list_screen.dart';
+import 'package:unicom_healthcare/settings/countries.dart';
 import 'package:unicom_healthcare/utilities/api_fhir.dart';
 import 'package:unicom_healthcare/utilities/locale_utils.dart';
 import 'package:unicom_healthcare/widgets/buttons/primary_button.dart';
@@ -90,27 +92,39 @@ class _MedicationDetailsScreenState extends State<MedicationDetailsScreen> {
           arguments: {"medication": _substitutionOf, "substitution": _medication}
         );
       },
-      child: Text(
-        LocaleUtils.translate(context).medicationDetailsScreen_Button_GenerateQrCode,
-        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-            fontWeight: FontWeight.w600,
-            color: Theme.of(context).colorScheme.background),
+      child: Center(
+        child: Text(
+          LocaleUtils.translate(context).medicationDetailsScreen_Button_GenerateQrCode,
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).colorScheme.background),
+        ),
       ),
     );
   }
 
   Widget buildSubstitutionListButton(BuildContext context) {
+    String doseformCode = DoseForms.codes[_medication.administrableDoseForm]!;
+    String languageCode = Languages.getCodeFromISOCode(UserPreferences.getCountryCode()!);
+    //String languageCode = Countries.codes[_medication.country]!;
+    String substanceCode = Substances.codes[_medication.substanceName]!;
+
     return PrimaryButton(
       onPressed: () async {
-        await ApiFhir.getSubstitutions(doseformCode: "doseformCode", languageCode: "languageCode", substanceCode: "substanceCode")
+        await ApiFhir.getSubstitutions(doseformCode: doseformCode, languageCode: languageCode, substanceCode: substanceCode)
         .then((bundleSubstitutions) {
+          List<Medication> substitutions = [];
+          if (bundleSubstitutions.entry != null) {
+            substitutions = bundleSubstitutions.entry!.map((e) {
+              return ApiFhir.getMedicationByMPD(e.resource as fhir_r5.MedicinalProductDefinition);
+            }).toList();
+          }
+
           Navigator.pushNamed(context,
             SubstitutionListScreen.route,
             arguments: {
               'medication': _medication,
-              'substitutions': bundleSubstitutions.entry!.map((e) {
-                return ApiFhir.getMedicationByMPD(e.resource as fhir_r5.MedicinalProductDefinition);
-              }).toList(),
+              'substitutions': substitutions,
             }
           );
         });
