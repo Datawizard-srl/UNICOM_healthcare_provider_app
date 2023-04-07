@@ -1,6 +1,6 @@
 # UNICOM Healthcare Provider App
 
-This Flutter app, along with the Patient Facing Apps, is critical to the cross-border drug substitution flow. 
+This [Flutter](https://docs.flutter.dev/get-started/install) app, along with the Patient Facing Apps, is critical to the cross-border drug substitution flow. 
 
 The end user of this app is a healthcare provider.
 
