@@ -5,6 +5,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:unicom_healthcare/utilities/locale_utils.dart';
 import 'package:unicom_healthcare/entities/medication.dart';
 
+
 class QrScreen extends StatefulWidget {
   static const String route = '/qr_screen';
 
@@ -40,7 +41,7 @@ class _QrScreen extends State<QrScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             buildHeader(context),
-            QrImage(
+            QrImageView(
               data: jsonEncode({"medication": _medication.id, "substitution": _substitution.id}),
               version: QrVersions.auto,
               size: 300,
