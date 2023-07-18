@@ -1,6 +1,6 @@
 {
-    "name": "unicom_patient",
-    "short_name": "unicom_patient",
+    "name": "unicom_hc",
+    "short_name": "unicom_hc",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

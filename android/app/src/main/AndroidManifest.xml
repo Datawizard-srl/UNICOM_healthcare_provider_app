@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="it.datawizard.unicom_patient">
+    package="it.datawizard.unicom_hc">
    <application
-        android:label="unicom_patient"
+        android:label="unicom_hc"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
