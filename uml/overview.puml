@@ -35,7 +35,7 @@ together {
     suggestInt <.. userApp
 
     note right of userApp {
-        HealthPass
+        eHealthPass
         InfoSage
         Pharmawizard Experimental App
     }

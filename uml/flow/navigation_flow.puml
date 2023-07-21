@@ -1,0 +1,69 @@
+@startuml
+
+title "Navigation flow"
+actor User
+participant "Patient Facing App" as app
+participant "Unicom Backend" as be #lightblue
+participant "Healcare Provider App" as hcp #lightgreen
+actor Pharmacist
+
+User -> app: typing drug name
+activate User
+    activate app
+        app -> be: suggest request
+        activate be
+        app <- be: suggest response
+        deactivate be
+        User <- app: show suggested drugs
+    deactivate app
+
+    User -> app: drug selected
+
+    activate app
+        app -> be: drug information request
+        activate be
+        app <- be: drug information response
+        deactivate be
+
+        app -> User: show drug information
+        deactivate app
+        User -> app: request to\ngenerate the QR Code
+        activate app
+        app -> Pharmacist: show QR Code
+        deactivate app
+        activate Pharmacist
+        Pharmacist -> hcp: request information\nfrom QR code scanned
+        activate hcp
+
+        hcp ->  be: drug information request
+        activate be
+        be -> hcp: drug information response
+        deactivate be
+        hcp -> Pharmacist: show drug information
+        deactivate hcp
+        Pharmacist -> hcp: request equivalent drugs
+        activate hcp
+        hcp -> be: substitution information\n request
+        activate be
+        be -> hcp: substitution information\n response
+        deactivate be
+
+        hcp -> Pharmacist: show substitutions list
+        deactivate hcp
+        Pharmacist -> hcp: select and/or\nfilter substitution
+        deactivate Pharmacist
+        activate hcp
+
+       deactivate Pharmacist
+       hcp -> User: show QR Code\nof the selected drugs\nby the pharmacist
+       deactivate hcp
+       User -> app: request information\nfrom QR code scanned
+       activate app
+       app -> be: drug information request
+       activate be
+       be -> app: drug information response
+       deactivate be
+       app -> User: show the\ninformation of\nthe substituted drug
+       deactivate app
+deactivate User
+@enduml
