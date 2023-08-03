@@ -80,7 +80,7 @@ class _QrScreen extends State<QrScreen> {
             Padding(
               padding: const EdgeInsets.only(top:10),
               child: Text(
-                _medication.name,
+                _substitution.name,
                 style: Theme.of(context).textTheme.headlineMedium,
                 textAlign: TextAlign.center,
               ),
