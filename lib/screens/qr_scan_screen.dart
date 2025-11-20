@@ -19,29 +19,34 @@ class _QrScanScreenState extends State<QrScanScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Scan Qr Code'), centerTitle: true),
       body: MobileScanner(
-          allowDuplicates: false,
-          onDetect: (barcode, args) async {
-            if (barcode.rawValue == null) {
+          onDetect: (capture) async {
+            final List<Barcode> barcodes = capture.barcodes;
+            if (barcodes.isEmpty) {
               debugPrint('Failed to scan Qr Code');
             } else {
-              try {
-                var rawValue = jsonDecode(barcode.rawValue!);
-                ApiFhir.getMedicationById(rawValue["medication"]).then(
-                    (medication) {
-                      Navigator.popAndPushNamed(
-                          context,
-                          MedicationDetailsScreen.route,
-                          arguments: {'medication': medication}
-                      );
-                    }
-                );
+              final barcode = barcodes.first;
+              if (barcode.rawValue == null) {
+                debugPrint('Failed to scan Qr Code');
+              } else {
+                try {
+                  var rawValue = jsonDecode(barcode.rawValue!);
+                  ApiFhir.getMedicationById(rawValue["medication"]).then(
+                      (medication) {
+                        Navigator.popAndPushNamed(
+                            context,
+                            MedicationDetailsScreen.route,
+                            arguments: {'medication': medication}
+                        );
+                      }
+                  );
 
-              } catch (error) {
-                debugPrint("Invalid Qr code");
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text("Invalid Qr code"),
-                  backgroundColor: Colors.red,
-                ));
+                } catch (error) {
+                  debugPrint("Invalid Qr code");
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text("Invalid Qr code"),
+                    backgroundColor: Colors.red,
+                  ));
+                }
               }
             }
           }),

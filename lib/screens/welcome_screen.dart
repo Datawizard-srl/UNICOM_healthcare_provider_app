@@ -7,7 +7,7 @@ import 'package:unicom_healthcare/database/local_storage/user_preferences.dart';
 import 'package:unicom_healthcare/models/user_preferences_model.dart';
 import 'package:unicom_healthcare/settings/flags.dart';
 import 'package:unicom_healthcare/themes/healthcare/dropdowns.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:unicom_healthcare/generated/app_localizations.dart';
 import 'package:unicom_healthcare/utilities/locale_utils.dart';
 import 'package:unicom_healthcare/widgets/buttons/primary_button.dart';
 
@@ -93,40 +93,44 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             padding: const EdgeInsets.all(30),
             child: Container(
               constraints: const BoxConstraints(maxWidth: 320),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    welcomeString,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    textAlign: TextAlign.center,
-                  ),
-                  Consumer<UserPreferencesNotifier>(
-                    builder: (context, localePreferences, child) {
-                      return Column(
-                        children: [
-                          countryDropdown(context, localePreferences),
-                          const SizedBox(height: 10),
-                          languageDropdown(context, localePreferences),
-                        ],
-                      );
-                    }
-                  ),
-                  Consumer<UserPreferencesNotifier>(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      welcomeString,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 20),
+                    Consumer<UserPreferencesNotifier>(
                       builder: (context, localePreferences, child) {
-                      return PrimaryButton(
-                        onPressed: _canGo(localePreferences)
-                            ? () async {
-                                UserPreferences.setLocaleSelected(true);
-                                Navigator.popAndPushNamed(context, HomepageScreen.route);
-                              }
-                            : null,
-                        child: Text(AppLocalizations.of(context)!.button_next),
-                      );
-                    }
-                  )
-                ],
+                        return Column(
+                          children: [
+                            countryDropdown(context, localePreferences),
+                            const SizedBox(height: 10),
+                            languageDropdown(context, localePreferences),
+                          ],
+                        );
+                      }
+                    ),
+                    const SizedBox(height: 20),
+                    Consumer<UserPreferencesNotifier>(
+                        builder: (context, localePreferences, child) {
+                        return PrimaryButton(
+                          onPressed: _canGo(localePreferences)
+                              ? () async {
+                                  UserPreferences.setLocaleSelected(true);
+                                  Navigator.popAndPushNamed(context, HomepageScreen.route);
+                                }
+                              : null,
+                          child: Text(AppLocalizations.of(context)!.button_next),
+                        );
+                      }
+                    )
+                  ],
+                ),
               ),
             ),
           ),

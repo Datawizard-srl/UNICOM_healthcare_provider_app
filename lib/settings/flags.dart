@@ -12,5 +12,9 @@ Widget getFlag(String country, {double height=20, double width=30}){
   if (countryCode == null){
     return const Icon(Icons.question_mark, size: 10);
   }
-  return CountryFlags.flag(countryCode, height: height, width: width);
+  return CountryFlag.fromCountryCode(
+    countryCode,
+    height: height,
+    width: width,
+  );
 }

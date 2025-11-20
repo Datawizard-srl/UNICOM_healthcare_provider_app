@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:universal_io/io.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:unicom_healthcare/generated/app_localizations.dart';
 
 
 class LocaleUtils {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:unicom_healthcare/generated/app_localizations.dart';
 import 'package:unicom_healthcare/app_icons_icons.dart';
 import 'package:unicom_healthcare/screens/qr_scan_screen.dart';
 import 'package:unicom_healthcare/screens/settings_screen.dart';

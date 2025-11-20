@@ -63,7 +63,11 @@ class _BaseDropdownState extends State<BaseDropdown> {
 
 Widget _countryRow(String countryCode, String countryName) {
   return Row(children: [
-    CountryFlags.flag(countryCode, height: 20, width: 30),
+    CountryFlag.fromCountryCode(
+      countryCode,
+      height: 20,
+      width: 30,
+    ),
     const SizedBox(width: 5),
     Text(countryName)]
   );
