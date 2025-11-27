@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:unicom_healthcare/generated/app_localizations.dart';
 import 'package:unicom_healthcare/app_icons_icons.dart';
-import 'package:unicom_healthcare/screens/qr_scan_screen.dart';
+import 'package:unicom_healthcare/entities/medication.dart';
 import 'package:unicom_healthcare/screens/settings_screen.dart';
+
+import 'package:unicom_healthcare/utilities/api_fhir.dart';
 
 
 class HomepageScreen extends StatelessWidget {
@@ -48,7 +50,33 @@ class HomepageScreen extends StatelessWidget {
 
   ElevatedButton buildQrButton(BuildContext context) {
     return ElevatedButton(
-      onPressed: (){ Navigator.pushNamed(context, QrScanScreen.route); },
+      onPressed: () async {
+        // Apri schermata di scan QR e attendi risultato
+        final qrResult = await Navigator.pushNamed(context, '/scan_qr');
+        if (qrResult is Map && qrResult['gravitate-unicom-demostrator'] == true) {
+          // Se il QR contiene il campo richiesto, mostra la lista farmaci reale
+          final substitutions = await ApiFhir.fetchMockMedicationsFromFhir();
+          if (substitutions.isNotEmpty) {
+            final medication = substitutions.first;
+            Navigator.pushNamed(
+              context,
+              '/substitution_list',
+              arguments: {
+                'medication': medication,
+                'substitutions': substitutions,
+              },
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Nessun farmaco trovato dal server FHIR')),
+            );
+          }
+        } else if (qrResult != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('QR non valido per la demo Gravitate-UNICOM'), backgroundColor: Colors.red),
+          );
+        }
+      },
       style: ElevatedButton.styleFrom(
         shape: const CircleBorder(side: BorderSide(color: Colors.white, width: 3)),
         padding: const EdgeInsets.all(95),

@@ -1,7 +1,6 @@
-import 'dart:convert';
 
+import 'dart:convert';
 import 'package:fhir/r5.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:unicom_healthcare/entities/medication.dart' as app_medication;
 
@@ -16,6 +15,36 @@ class ResourcesNames {
 }
 
 class ApiFhir {
+
+    /// Fetch mock medications from public FHIR endpoint (UNICON sandbox)
+    static Future<List<app_medication.Medication>> fetchMockMedicationsFromFhir() async {
+      final url = Uri.parse('https://sandbox.hl7europe.eu/unicom/fhir/MedicinalProductDefinition?product-classification=C08CA01&country=100000000430');
+      final response = await http.get(url);
+      final json = jsonDecode(response.body);
+      final List<app_medication.Medication> meds = [];
+      if (json['entry'] != null) {
+        for (final entry in json['entry']) {
+          final resource = entry['resource'];
+          meds.add(
+            app_medication.Medication.compiled(
+              id: resource['id'] ?? '',
+              mpid: resource['identifier'] != null && resource['identifier'].isNotEmpty ? resource['identifier'][0]['value'] ?? '' : '',
+              name: resource['name'] != null && resource['name'].isNotEmpty ? resource['name'][0]['productName'] ?? '' : '',
+              substanceName: resource['name'] != null && resource['name'].isNotEmpty ? (resource['name'][0]['productName'] ?? '') : '',
+              moietyName: '',
+              administrableDoseForm: resource['administrableDoseForm'] != null && resource['administrableDoseForm']['coding'] != null && resource['administrableDoseForm']['coding'].isNotEmpty ? resource['administrableDoseForm']['coding'][0]['display'] ?? '' : '',
+              productUnitOfPresentation: '',
+              routesOfAdministration: '',
+              referenceStrength: '',
+              marketingAuthorizationHolderLabel: '',
+              country: '',
+              languageCode: '',
+            ),
+          );
+        }
+      }
+      return meds;
+    }
   late final String serverUrl;
   late final String substitutionUrl;
   late final String substitutionEndpoint;
@@ -42,12 +71,12 @@ class ApiFhir {
 
   static Future<MedicinalProductDefinition> getMedicinalProductDefinitionById(String id) async {
     var response = await http.get(getUri(instance.serverUrl, '/fhir/${ResourcesNames.medicinalProductDefinition}/$id', null), headers: headers);
-    return MedicinalProductDefinition.fromJson(jsonDecode(response.body));
+    return MedicinalProductDefinition.fromJson(jsonDecode(response.body) ?? {});
   }
 
   static Future<MedicinalProductDefinition> getMedicinalProductDefinition(Map<String, dynamic>? queryParameters) async {
     var response = await http.get(getUri(instance.serverUrl, '/fhir/${ResourcesNames.medicinalProductDefinition}', queryParameters), headers: headers);
-    return MedicinalProductDefinition.fromJson(jsonDecode(response.body));
+    return MedicinalProductDefinition.fromJson(jsonDecode(response.body) ?? {});
   }
 
   static Future<Ingredient> getIngredient(Map<String, dynamic>? queryParameters) async {
@@ -86,7 +115,7 @@ class ApiFhir {
 
     var response = await http.get(getUri(instance.serverUrl, '/fhir/${ResourcesNames.medicinalProductDefinition}/$id', null), headers: headers);
     var jsonResponse = jsonDecode(response.body);
-    MedicinalProductDefinition medicinalProductDefinition = MedicinalProductDefinition.fromJson(jsonResponse);
+    MedicinalProductDefinition medicinalProductDefinition = MedicinalProductDefinition.fromJson(jsonResponse ?? {});
     var country = jsonResponse['name'][0]['usage'][0]['country']['coding'][0]['display'];
     var languageCode = jsonResponse['name'][0]['usage'][0]['language']['coding'][0]['code'];
 
