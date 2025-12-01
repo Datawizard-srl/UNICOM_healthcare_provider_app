@@ -51,30 +51,68 @@ class HomepageScreen extends StatelessWidget {
   ElevatedButton buildQrButton(BuildContext context) {
     return ElevatedButton(
       onPressed: () async {
-        // Apri schermata di scan QR e attendi risultato
-        final qrResult = await Navigator.pushNamed(context, '/scan_qr');
-        if (qrResult is Map && qrResult['gravitate-unicom-demostrator'] == true) {
-          // Se il QR contiene il campo richiesto, mostra la lista farmaci reale
-          final substitutions = await ApiFhir.fetchMockMedicationsFromFhir();
-          if (substitutions.isNotEmpty) {
-            final medication = substitutions.first;
-            Navigator.pushNamed(
-              context,
-              '/substitution_list',
-              arguments: {
-                'medication': medication,
-                'substitutions': substitutions,
-              },
-            );
-          } else {
+        try {
+          // Apri schermata di scan QR e attendi risultato
+          final qrResult = await Navigator.pushNamed(context, '/scan_qr');
+          
+          debugPrint('QR Result: $qrResult');
+          
+          if (qrResult is Map && qrResult['gravitate-unicom-demonstrator'] == true) {
+            // Mostra loading
+            if (context.mounted) {
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) => const Center(child: CircularProgressIndicator()),
+              );
+            }
+            
+            // Se il QR contiene il campo richiesto, mostra la lista farmaci reale
+            final substitutions = await ApiFhir.fetchMockMedicationsFromFhir();
+            
+            // Chiudi loading
+            if (context.mounted) {
+              Navigator.pop(context);
+            }
+            
+            debugPrint('Farmaci trovati: ${substitutions.length}');
+            
+            if (substitutions.isNotEmpty) {
+              final medication = substitutions.first;
+              if (context.mounted) {
+                Navigator.pushNamed(
+                  context,
+                  '/substitution_list',
+                  arguments: {
+                    'medication': medication,
+                    'substitutions': substitutions,
+                  },
+                );
+              }
+            } else {
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Nessun farmaco trovato dal server FHIR')),
+                );
+              }
+            }
+          } else if (qrResult != null) {
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('QR non valido per la demo Gravitate-UNICOM'), backgroundColor: Colors.red),
+              );
+            }
+          }
+        } catch (e, stackTrace) {
+          debugPrint('Errore durante lo scan: $e');
+          debugPrint('Stack trace: $stackTrace');
+          if (context.mounted) {
+            // Chiudi eventuali dialog aperti
+            Navigator.of(context).popUntil((route) => route.isFirst);
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Nessun farmaco trovato dal server FHIR')),
+              SnackBar(content: Text('Errore: $e'), backgroundColor: Colors.red),
             );
           }
-        } else if (qrResult != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('QR non valido per la demo Gravitate-UNICOM'), backgroundColor: Colors.red),
-          );
         }
       },
       style: ElevatedButton.styleFrom(

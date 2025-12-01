@@ -30,6 +30,17 @@ class _QrScreen extends State<QrScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cleanName = "AMLODIPINA DOC GENERICI compresse 10 mg";
+    final medicineName = "Amlodipin sandoz 10 mg TABLETTER";
+    
+    final qrData = {
+      "gravitate-unicom-demonstrator": true, 
+      "medicine_name": medicineName,
+      "substitute_medication": cleanName,
+      "id": _substitution.id
+    };
+    final qrJson = jsonEncode(qrData);
+    
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -42,7 +53,7 @@ class _QrScreen extends State<QrScreen> {
           children: [
             buildHeader(context),
             QrImageView(
-              data: jsonEncode({"medication": _medication.id, "substitution": _substitution.id}),
+              data: qrJson,
               version: QrVersions.auto,
               size: 300,
               backgroundColor: Colors.white,

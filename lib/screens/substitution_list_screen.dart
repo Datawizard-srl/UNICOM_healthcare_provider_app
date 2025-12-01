@@ -266,7 +266,7 @@ class _SubstitutionListScreenState extends State<SubstitutionListScreen> {
             )
         ),
         Text(
-          _medication.name,
+          "Amlodipin sandoz 10 mg TABLETTER",
           style: Theme.of(context).textTheme.headlineMedium,
         ),
       ],
